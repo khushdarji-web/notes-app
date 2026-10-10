@@ -6,27 +6,44 @@
 <title>Lecture Notes</title>
 <style>
   body{font-family:sans-serif;max-width:600px;margin:auto;padding:16px;background:#f5f7fa}
-  h1{font-size:22px}
   .box{background:#fff;padding:16px;border-radius:12px;box-shadow:0 1px 4px #0002}
-  button{width:100%;padding:14px;margin-top:12px;font-size:16px;border:0;border-radius:10px;background:#2563eb;color:#fff}
-  #notes{white-space:pre-wrap;margin-top:16px}
+  button{width:100%;padding:14px;margin-top:12px;font-size:16px;border:0;border-radius:10px;color:#fff;background:#2563eb}
+  #stop{background:#dc2626}
+  #text{white-space:pre-wrap;margin-top:16px;min-height:80px}
 </style>
 </head>
 <body>
 <h1>📚 Lecture Notes</h1>
 <div class="box">
-  <p>Lecture no audio select karo:</p>
-  <input type="file" id="audio" accept="audio/*">
-  <button onclick="makeNotes()">Notes banavo</button>
-  <div id="notes"></div>
+  <button id="start">🎤 Record shuru karo</button>
+  <button id="stop">⏹ Band karo</button>
+  <button id="copy">📋 Text copy karo</button>
+  <div id="text">Text ahi dekhashe...</div>
 </div>
 <script>
-function makeNotes(){
-  const f=document.getElementById('audio').files[0];
-  const out=document.getElementById('notes');
-  if(!f){out.textContent='Pehla audio file select karo.';return;}
-  out.textContent='Audio malyo: '+f.name+'\n\n(AI notes no bhaag aagal na step ma jodishu.)';
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const out=document.getElementById('text');
+let rec,final='';
+if(!SR){out.textContent='Aa browser ma voice support nathi. Chrome vapro.';}
+else{
+  rec=new SR();
+  rec.lang='gu-IN';
+  rec.continuous=true;
+  rec.interimResults=true;
+  rec.onresult=e=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t+' ';else interim+=t;
+    }
+    out.textContent=final+interim;
+  };
+  rec.onend=()=>{if(running)rec.start();};
 }
+let running=false;
+document.getElementById('start').onclick=()=>{if(rec){running=true;rec.start();}};
+document.getElementById('stop').onclick=()=>{running=false;if(rec)rec.stop();};
+document.getElementById('copy').onclick=()=>{navigator.clipboard.writeText(final||out.textContent);};
 </script>
 </body>
 </html>
