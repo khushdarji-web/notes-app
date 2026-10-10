@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture Notes</title>
+<style>
+  body{font-family:sans-serif;max-width:600px;margin:auto;padding:16px;background:#f5f7fa}
+  h1{font-size:22px}
+  .box{background:#fff;padding:16px;border-radius:12px;box-shadow:0 1px 4px #0002}
+  button{width:100%;padding:14px;margin-top:12px;font-size:16px;border:0;border-radius:10px;background:#2563eb;color:#fff}
+  #notes{white-space:pre-wrap;margin-top:16px}
+</style>
+</head>
+<body>
+<h1>📚 Lecture Notes</h1>
+<div class="box">
+  <p>Lecture no audio select karo:</p>
+  <input type="file" id="audio" accept="audio/*">
+  <button onclick="makeNotes()">Notes banavo</button>
+  <div id="notes"></div>
+</div>
+<script>
+function makeNotes(){
+  const f=document.getElementById('audio').files[0];
+  const out=document.getElementById('notes');
+  if(!f){out.textContent='Pehla audio file select karo.';return;}
+  out.textContent='Audio malyo: '+f.name+'\n\n(AI notes no bhaag aagal na step ma jodishu.)';
+}
+</script>
+</body>
+</html>
